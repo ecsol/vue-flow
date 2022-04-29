@@ -39,6 +39,8 @@ const {
 
 const nodeElement = ref()
 
+let dragging = $ref(false)
+
 useDrag({
   id,
   el: nodeElement,
@@ -68,26 +70,21 @@ useDrag({
     emits.nodeDragStart({ event: event.sourceEvent, node })
   },
   onDrag(event, { dx, dy }) {
-    updateNodePosition({ id: node.id, diff: { x: dx, y: dy }, dragging: true })
+    dragging = true
+    updateNodePosition({ id: node.id, diff: { x: dx, y: dy } })
     emits.nodeDrag({ event: event.sourceEvent, node })
   },
   onStop(event) {
-    if (!node.dragging) {
-      if (selectable && !selectNodesOnDrag && !node.selected) {
-        addSelectedNodes([node])
-      }
-      emits.nodeClick({ event: event.sourceEvent, node })
-      return
-    }
+    dragging = false
 
-    updateNodePosition({ id: node.id, dragging: false })
+    updateNodePosition({ id: node.id })
 
     emits.nodeDragStop({ event: event.sourceEvent, node })
   },
 })
 
 onBeforeMount(() => {
-  updateNodePosition({ id: node.id, diff: { x: 0, y: 0 }, dragging: false })
+  updateNodePosition({ id: node.id, diff: { x: 0, y: 0 } })
 })
 
 onMounted(() => {
@@ -112,7 +109,7 @@ onMounted(() => {
     ([pos, parent]) => {
       const xyzPos = {
         ...pos,
-        z: node.dragging || node.selected ? 1000 : 0,
+        z: node.computedPosition.z ? node.computedPosition.z : node.selected ? 1000 : 0,
       }
       const graphNode = getNode(id)!
 
@@ -133,19 +130,19 @@ onUnmounted(() => {
 })
 
 const onMouseEnter = (event: MouseEvent) => {
-  if (!node.dragging) {
+  if (!dragging) {
     emits.nodeMouseEnter({ event, node })
   }
 }
 
 const onMouseMove = (event: MouseEvent) => {
-  if (!node.dragging) {
+  if (!dragging) {
     emits.nodeMouseMove({ event, node })
   }
 }
 
 const onMouseLeave = (event: MouseEvent) => {
-  if (!node.dragging) {
+  if (!dragging) {
     emits.nodeMouseLeave({ event, node })
   }
 }
@@ -160,8 +157,8 @@ const onContextMenu = (event: MouseEvent) => {
 const onDoubleClick = (event: MouseEvent) => emits.nodeDoubleClick({ event, node })
 
 const onSelectNode = (event: MouseEvent) => {
-  if (!draggable) {
-    if (selectable) {
+  if (!dragging) {
+    if (selectable && !selectNodesOnDrag && !node.selected) {
       setState({
         nodesSelectionActive: false,
       })
@@ -179,7 +176,7 @@ const getClass = computed(() => {
     `vue-flow__node-${name}`,
     noPanClassName,
     {
-      dragging: node.dragging,
+      dragging,
       selected: node.selected,
       selectable,
     },
