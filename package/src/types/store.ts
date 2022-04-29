@@ -1,5 +1,5 @@
 import { ComputedRef, CSSProperties, ToRefs } from 'vue'
-import { Dimensions, ElementData, Elements, FlowElements, FlowInstance, FlowOptions, Rect, SnapGrid, XYPosition } from './flow'
+import { Dimensions, ElementData, Elements, FlowElements, FlowInstance, FlowOptions, SnapGrid, XYPosition } from './flow'
 import { EdgeComponent, NodeComponent, DefaultNodeTypes, DefaultEdgeTypes } from './components'
 import { Connection, ConnectionLineType, ConnectionMode } from './connection'
 import { DefaultEdgeOptions, Edge, GraphEdge } from './edge'
