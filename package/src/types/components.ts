@@ -1,4 +1,4 @@
-import { Component, CSSProperties, DefineComponent, HTMLAttributes, SVGAttributes, VNode } from "vue";
+import { Component, CSSProperties, DefineComponent, SVGAttributes, VNode } from 'vue'
 import { BackgroundVariant, Dimensions, ElementData, XYPosition } from './flow'
 import { GraphNode, NodeProps } from './node'
 import { EdgeProps } from './edge'
