@@ -31,13 +31,14 @@ import {
   isParentSelected,
   parseEdge,
   parseNode,
+  warn,
 } from '~/utils'
 
 const isDef = <T>(val: T): val is NonNullable<T> => typeof val !== 'undefined'
 
 const addEdge = (edgeParams: Edge | Connection, edges: Edge[]) => {
   if (!edgeParams.source || !edgeParams.target) {
-    console.warn("[vueflow]: Can't create edge. An edge needs a source and a target.")
+    warn("Can't create edge. An edge needs a source and a target.")
     return false
   }
 
@@ -57,14 +58,14 @@ const addEdge = (edgeParams: Edge | Connection, edges: Edge[]) => {
 
 const updateEdgeAction = (edge: GraphEdge, newConnection: Connection, edges: GraphEdge[], add: Actions['addEdges']) => {
   if (!newConnection.source || !newConnection.target) {
-    console.warn("[vueflow]: Can't create new edge. An edge needs a source and a target.")
+    warn("Can't create new edge. An edge needs a source and a target.")
     return false
   }
 
   const foundEdge = edges.find((e) => isGraphEdge(e) && e.id === edge.id)
 
   if (!foundEdge) {
-    console.warn(`[vueflow]: The old edge with id=${edge.id} does not exist.`)
+    warn(`The old edge with id=${edge.id} does not exist.`)
     return false
   }
 
@@ -100,7 +101,7 @@ const createGraphNodes = (nodes: Node[], getNode: Getters['getNode'], currGraphN
   graphNodes.forEach((node) => {
     const nextNodes = [...graphNodes, ...currGraphNodes]
     if (node.parentNode && !nextNodes.find((n) => n.id === node.parentNode)) {
-      console.warn(`[vueflow]: Parent node ${node.parentNode} not found`)
+      warn(`Parent node ${node.parentNode} not found`)
     }
 
     if (node.parentNode || parentNodes[node.id]) {
@@ -238,8 +239,8 @@ export default (state: State, getters: ComputedGetters): Actions => {
 
       const missingSource = !sourceNode || typeof sourceNode === 'undefined'
       const missingTarget = !targetNode || typeof targetNode === 'undefined'
-      if (missingSource) console.warn(`[vueflow]: Couldn't create edge for source id: ${edge.source}; edge id: ${edge.id}`)
-      if (missingTarget) console.warn(`[vueflow]: Couldn't create edge for target id: ${edge.target}; edge id: ${edge.id}`)
+      if (missingSource) warn(`Couldn't create edge for source id: ${edge.source}; edge id: ${edge.id}`)
+      if (missingTarget) warn(`Couldn't create edge for target id: ${edge.target}; edge id: ${edge.id}`)
       if (missingSource || missingTarget) return res
 
       const storedEdge = getters.getEdge.value(edge.id)
@@ -288,8 +289,8 @@ export default (state: State, getters: ComputedGetters): Actions => {
 
         const missingSource = !sourceNode || typeof sourceNode === 'undefined'
         const missingTarget = !targetNode || typeof targetNode === 'undefined'
-        if (missingSource) console.warn(`[vueflow]: Couldn't create edge for source id: ${edge.source}; edge id: ${edge.id}`)
-        if (missingTarget) console.warn(`[vueflow]: Couldn't create edge for target id: ${edge.target}; edge id: ${edge.id}`)
+        if (missingSource) warn(`Couldn't create edge for source id: ${edge.source}; edge id: ${edge.id}`)
+        if (missingTarget) warn(`Couldn't create edge for target id: ${edge.target}; edge id: ${edge.id}`)
         if (missingTarget || missingSource) return acc
 
         acc.push({
