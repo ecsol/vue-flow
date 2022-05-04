@@ -1,6 +1,6 @@
 import { XYPosition, Dimensions, ElementData } from './flow'
-import { NodeHandleBounds, Node } from './node'
-import { Edge } from './edge'
+import { NodeHandleBounds, Node, GraphNode } from './node'
+import { Edge, GraphEdge } from './edge'
 
 export type NodeDimensionChange = {
   id: string
@@ -28,7 +28,7 @@ export type NodeRemoveChange = {
 }
 
 export type NodeAddChange<Data = ElementData> = {
-  item: Node<Data>
+  item: GraphNode<Data>
   type: 'add'
 }
 
@@ -48,7 +48,7 @@ export type NodeChange =
 export type EdgeSelectionChange = NodeSelectionChange
 export type EdgeRemoveChange = NodeRemoveChange
 export type EdgeAddChange<Data = ElementData> = {
-  item: Edge<Data>
+  item: GraphEdge<Data>
   type: 'add'
 }
 export type EdgeResetChange<Data = ElementData> = {
